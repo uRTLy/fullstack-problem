@@ -1,0 +1,11 @@
+{
+  "name": "fullstack-problem",
+  "version": "1.0.0",
+  "description": "Color TV interview exercise",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrick Tłuszcz <patricktluszcz@gmail.com>",
+  "license": "ISC"
+}
