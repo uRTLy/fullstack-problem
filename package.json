@@ -2,10 +2,42 @@
   "name": "fullstack-problem",
   "version": "1.0.0",
   "description": "Color TV interview exercise",
-  "main": "index.js",
+  "main": "./backend/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server  --hot --content-base public/"
   },
   "author": "Patrick Tłuszcz <patricktluszcz@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-core": "^6.17.0",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-transform-async-to-generator": "^6.16.0",
+    "babel-plugin-transform-object-rest-spread": "^6.16.0",
+    "babel-plugin-transform-regenerator": "^6.1.4",
+    "babel-polyfill": "^6.1.4",
+    "babel-preset-es2015": "^6.16.0",
+    "bluebird": "^3.4.6",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "node-fetch": "^1.6.3",
+    "pg-promise": "^5.3.4",
+    "pug": "^2.0.0-beta6",
+    "react": "^15.3.2",
+    "react-bootstrap": "^0.30.5",
+    "react-dom": "^15.3.2",
+    "redux-logger": "^2.7.0",
+    "redux-thunk": "^2.1.0",
+    "request": "^2.65.0",
+    "request-promise": "^4.1.1",
+    "shortid": "^2.2.6",
+    "yql": "^1.0.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.17.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "webpack": "^1.13.2"
+  }
 }
