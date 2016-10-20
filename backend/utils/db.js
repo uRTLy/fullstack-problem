@@ -1,26 +1,30 @@
 const postgressConfiguration = {
-  host: 'ec2-184-73-222-90.compute-1.amazonaws.com',
+  host: 'fizzy-cherry.db.elephantsql.com',
   port: 5432,
-  user: 'd79uavi9v5d3em',
-  password: 'Pk-2apTdPsOnSWU9p18KfYCGjS'
+  user: 'cxpeayqi',
+  password: 'BQiHhSBTytESf-ClAFKDzea1b_8p0OhA'
 };
+
 
 const options = {
-  promiseLib: require('bluebird');
+  promiseLib: require('bluebird')
 };
 
+const connectionString = 'postgres://cxpeayqi:BQiHhSBTytESf-ClAFKDzea1b_8p0OhA@fizzy-cherry.db.elephantsql.com:5432/cxpeayqi'
+
 const postgress = require('pg-promise')(options);
-const db = postgress(postgressConfiguration);
+const db = postgress(connectionString);
 
+const path = require('path');
 
-// const query = (sql, params, cb) => {
-//   db.connect()
-// };
+const QueryFile = require('pg-promise').QueryFile;
 
+const sql = (file) => {
+  const filePath = path.join(__dirname, file);
+  return new QueryFile(filePath, { minify: true });
+};
 
 module.exports = {
-  getAllCities,
-  addCity,
-  editCity,
-  deleteCity
+  db,
+  sql
 };

@@ -1,32 +1,33 @@
 import * as actionTypes from "./actionTypes";
 import axios from "axios";
 
-export function addCityToDB (city) {
+export function addCity (city) {
 
   return function (dispatch) {
     axios.post(`http://localhost:3000/api/city/add`, { city })
-      .then(res => dispatch(addCitySuccess(city)))
+      .then(res => dispatch(addCitySuccess(city, res)))
       .catch(error => dispatch(addCityFailure(error)));
   };
 };
 
-export function addCitySuccess(city) {
+export function addCitySuccess (city, res) {
+  console.log(res);
   return {
     type: actionTypes.ADD_CITY,
     city
   };
 };
 
-export function addCityFailure(error {
+export function addCityFailure (error) {
   return {
     type: actionTypes.ADD_CITY_FAILURE,
     error
   };
 };
 
-export function deleteCityFromDB (city) {
+export function deleteCity (city) {
   return function (dispatch) {
-    axios.delet(`http://localhost:3000/api/city/delete/`})
+    axios.delete(`http://localhost:3000/api/city/delete/`)
       .then(res => dispatch(deleteCitySuccess(city)))
       .catch(error => dispatch(deleteCityFailure(error)));
   };
@@ -47,10 +48,10 @@ export function deleteCityFailure (error) {
 }
 
 export function checkSimilarCities (cityObject) {
-  const { name, zip } = cityObject;
+  const { nameOrZip } = cityObject;
 
   return function (dispatch) {
-    axios.get(`http://localhost:3000/api/city/check/${zip}`)
+    axios.get(`http://localhost:3000/api/city/check/${nameOrZip}`)
       .then(response => dispatch(checkSimilarCitiesSucces(response.data.places)))
       .catch(err => dispatch(checkSimilarCitiesFailure(err)))
   }
@@ -81,8 +82,8 @@ export function editCity (city, oldIndex) {
   };
 };
 
-export function fetchCitiesSucces (res) {
-  const { cities } = res.data;
+export function fetchCitiesSuccess (res) {
+  const cities = res.data;
   return {
     type: actionTypes.FETCH_CITIES_SUCCES,
     cities
@@ -100,7 +101,7 @@ export function fetchCitiesError (error) {
 export function getAllCitiesFromDB () {
   return function (dispatch) {
     axios.get("http://localhost:3000/api/cities")
-      .then(response => dispatch(fetchCitiesSucces(response)))
+      .then(response => dispatch(fetchCitiesSuccess(response)))
       .catch(error => dispatch(fetchCitiesError(error)));
 
       return {

@@ -5,7 +5,9 @@ const initialState = {
   saveToDbError: false,
   fetchFromDbError: false,
   cities: [],
-  similarCities: []
+  editedCity: null, 
+  similarCities: [],
+  showModal: false,
 };
 
 export default function (state = initialState, action) {
@@ -15,6 +17,8 @@ export default function (state = initialState, action) {
     case actionTypes.ADD_CITY: {
       return Object.assign({}, {
         ...state,
+        showModal: false,
+        similarCities: [],
         cities: [...state.cities, action.city]
       });
     }

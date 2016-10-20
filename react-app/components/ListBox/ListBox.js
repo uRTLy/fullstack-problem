@@ -22,13 +22,17 @@ import {
   OverlayTrigger,
   Tooltip } from "react-bootstrap";
 
-import shortid from "shortid";
-
 import DisplayResults from "../DisplayResults/DisplayResults";
-import CityForm from "../CityForm/CityForm";
+import AddCityForm from "../AddCityForm/AddCityForm";
+import EditCityForm from "../EditCityForm/EditCityForm";
+
+import { createStringFromObject } from "../../utils";
+
 
 const Header = Modal.Header;
 const Body = Modal.Body;
+
+const remove = (item, array) => array.filter(arrItem => arrItem !== item);
 
 const tooltip = (
   <Tooltip id="infoTooltip">
@@ -36,13 +40,13 @@ const tooltip = (
   </Tooltip>
 );
 
-
 class ListBox extends Component {
   constructor () {
     super();
     this.state = {
       selected: [],
-      editedCity: ""
+      editedCity: "",
+      showAddCityForm: false
     };
     this.cancelModal = this.cancelModal.bind(this);
     this.cancelEditForm = this.cancelEditForm.bind(this);
@@ -53,24 +57,24 @@ class ListBox extends Component {
   selectOrUnselect (city) {
     let { selected } = this.state;
     const isSelected = (selected.includes(city));
-    selected = (isSelected) ? selected.filter(citySEL => citySEL !== city) : [...selected, city];
+    selected = (isSelected) ? remove(city, selected) : [...selected, city];
 
     this.setState({ selected });
   }
   cancelModal () {
     this.setState({ showAddCityForm: false });
   }
-  onEditCity (city, oldIndex) {
+  onSaveCity (city, oldIndex) {
     this.props.editCity(city, oldIndex);
-    this.setState({ showEditCityForm: false, editedCity: null });
+    this.cancelEditForm();
   }
   showEditCityForm (event, city) {
     event.stopPropagation();
-    const { showEditCityForm } = this.state;
+    this.setState({ showEditCityForm: true, editedCity: city });
 
   }
   cancelEditForm () {
-
+    this.setState({ showEditCityForm: false, editedCity: null });
   }
   renderCity (city, i) {
     const { selected, editedCity } = this.state;
@@ -79,7 +83,8 @@ class ListBox extends Component {
         onClick={() => this.selectOrUnselect(city)}
         key={i}
         active={(selected.includes(city))}>
-        {city.name} {city.zip}
+
+        <p className="list-city">{createStringFromObject(city)}</p>
 
         <Glyphicon
           onClick={() => this.props.removeCity(city)}
@@ -97,18 +102,16 @@ class ListBox extends Component {
   }
   renderEditCity (city, i) {
     return (
-      <CityForm
+      <EditCityForm
         key={i}
-        index={i}
-        city={city}
-        onConfirm={this.onEditCity}
+        editedCity={city}
+        onSaveCity={this.onSaveCity}
         cancel={this.cancelEditForm}
         />
     );
   }
   render () {
     const { selected, isLoading, editedCity, showAddCityForm, showEditCityForm } = this.state;
-    console.log(editedCity);
     return (
       <div>
           <Col md={12} xs={12}>
@@ -136,11 +139,11 @@ class ListBox extends Component {
 
           <Modal show={showAddCityForm}>
             <Body>
-              <CityForm
-                onConfirm={this.props.checkSimilarCities}
-                onChooseCity={this.props.addCity}
+              <AddCityForm
                 cancel={this.cancelModal}
                 similarCities={this.props.similarCities}
+                checkSimilarCities={this.props.checkSimilarCities}
+                addCity={this.props.addCity}
                 />
             </Body>
           </Modal>
@@ -151,13 +154,8 @@ class ListBox extends Component {
 }
 
 function mapStateToProps (state) {
-  const { similarCities, fetchFromDbError, saveToDbError, cities } = state.cities;
-  return {
-    cities: cities,
-    similarCities: similarCities,
-    fetchFromDbError: fetchFromDbError,
-    saveToDbError: saveToDbError
-  };
+  const cities = state.cities;
+  return { ...cities };
 }
 
 
@@ -165,7 +163,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     onAppInit: () => getAllCitiesFromDB(),
     addCity: city => addCity(city),
-    removeCity: city => deleteCity(city),
+    removeCity: id => deleteCity(id),
     editCity: (city, oldIndex) => editCity(city, oldIndex),
     updateDB: () => saveCitiesToDB(),
     checkSimilarCities: city => checkSimilarCities(city)

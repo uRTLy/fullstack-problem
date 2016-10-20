@@ -30,6 +30,7 @@
     "redux-thunk": "^2.1.0",
     "request": "^2.65.0",
     "request-promise": "^4.1.1",
+    "sequelize": "^3.24.4",
     "shortid": "^2.2.6",
     "yql": "^1.0.2"
   },
