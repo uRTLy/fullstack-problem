@@ -2,9 +2,9 @@
   "name": "fullstack-problem",
   "version": "1.0.0",
   "description": "Color TV interview exercise",
-  "main": "./server.js",
+  "main": "app.js",
   "scripts": {
-    "start": "webpack-dev-server  --hot --content-base public/"
+    "start": "node app.js"
   },
   "author": "Patrick Tłuszcz <patricktluszcz@gmail.com>",
   "license": "ISC",

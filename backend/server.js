@@ -33,3 +33,5 @@ app.use('/api', weather);
 app.use('/api', city);
 
 app.listen(process.env.PORT || 8080);
+
+moduke.exports = app;
