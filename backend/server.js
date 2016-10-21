@@ -34,4 +34,4 @@ app.use('/api', city);
 
 app.listen(process.env.PORT || 8080);
 
-moduke.exports = app;
+module.exports = app;
