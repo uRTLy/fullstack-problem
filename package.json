@@ -2,7 +2,7 @@
   "name": "fullstack-problem",
   "version": "1.0.0",
   "description": "Color TV interview exercise",
-  "main": "./backend/server.js",
+  "main": "server.js",
   "scripts": {
     "start": "node ./backend/server.js"
   },
