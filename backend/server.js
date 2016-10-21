@@ -1,6 +1,6 @@
 "use strict";
 
-const express = require("express");
+const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const weather = require("./api/weather/weather.js");
@@ -32,4 +32,4 @@ app.use((err, req, res, next) => {
 app.use('/api', weather);
 app.use('/api', city);
 
-module.exports = app;
+app.listen(process.env.PORT || 8080);
