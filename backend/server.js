@@ -7,7 +7,7 @@ const weather = require("./api/weather/weather.js");
 const city = require("./api/city/city.js");
 app.use(bodyParser.json({ type: 'application/json' }));
 
-app.use('/static', express.static('public'));
+app.use('/', express.static('../public'));
 
 app.set('views', './views');
 app.set('view engine', 'pug');
@@ -32,5 +32,4 @@ app.use((err, req, res, next) => {
 app.use('/api', weather);
 app.use('/api', city);
 
-app.listen(3000);
-console.log("listening");
+module.exports = app;
