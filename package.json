@@ -4,8 +4,7 @@
   "description": "Color TV interview exercise",
   "main": "app.js",
   "scripts": {
-    "start": "webpack-dev-server  --hot --content-base public/",
-    ""
+    "start": "webpack-dev-server  --hot --content-base public/"
   },
   "author": "Patrick Tłuszcz <patricktluszcz@gmail.com>",
   "license": "ISC",
