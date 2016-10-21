@@ -2,12 +2,11 @@ import * as actionTypes from "../actions/actionTypes";
 import shortid from "shortid";
 
 const initialState = {
-  saveToDbError: false,
-  fetchFromDbError: false,
   cities: [],
-  editedCity: null, 
   similarCities: [],
-  showModal: false,
+  duringAction: false,
+  failureNotification: false,
+  notification: ""
 };
 
 export default function (state = initialState, action) {
@@ -17,87 +16,110 @@ export default function (state = initialState, action) {
     case actionTypes.ADD_CITY: {
       return Object.assign({}, {
         ...state,
-        showModal: false,
         similarCities: [],
+        failureNotification: false,
+        duringAction: false,
         cities: [...state.cities, action.city]
       });
+    }
+    break;
+
+    case actionTypes.ADD_CITY_FAILURE: {
+      return {
+        ...state,
+        duringAction: false,
+        failureNotification: true,
+        notification: action.notification
+      };
     }
     break;
 
     case actionTypes.DELETE_CITY: {
       return {
         ...state,
-        cities: state.cities.filter(city => city !== action.city)
+        duringAction: false,
+        failureNotification: false,
+        cities: state.cities.filter(city => city.woeid !== action.woeid)
+      };
+    }
+    break;
+
+    case actionTypes.DELETE_CITY_FAILURE: {
+      return {
+        ...state,
+        duringAction: false,
+        failureNotification: true,
+        notification: action.notification
       };
     }
     break;
 
   case actionTypes.EDIT_CITY: {
-    const { city, oldIndex } = action;
+    const { city: cityToEdit } = action;
 
-    const cities = [
-        ...state.cities.slice(0, oldIndex ),
-         { name: city.name, zip: city.zip },
-        ...state.cities.slice(oldIndex  + 1)
-      ];
+    const cities = state.cities.map(city => {
+      if (city.id === cityToEdit.id) {
+        return cityToEdit;
+      }
+      return city;
+    });
 
     return {
       ...state,
+      duringAction: false,
       cities
       };
     }
     break;
 
+    case actionTypes.EDIT_CITY_FAILURE: {
+
+      return {
+        ...state,
+        failureNotification: true,
+        notification: action.notification
+        };
+      }
+      break;
+
   case actionTypes.SIMILAR_CITIES_ARRIVED: {
     return {
       ...state,
+      duringAction: false,
       similarCities: action.similarCities
     };
   }
 
-  case actionTypes.SAVE_CITIES_SUCCES: {
+  case actionTypes.FETCH_CITIES_SUCCESS: {
     return {
       ...state,
-      saveToDbError: false,
-    };
-  }
-  break;
-
-  case actionTypes.SAVE_CITIES_ERROR: {
-    return {
-      ...state,
-      saveToDbError: true
-    };
-  }
-  break;
-
-  case actionTypes.FETCH_CITIES_SUCCES: {
-
-    return {
-      ...state,
+      duringAction: false,
       cities: action.cities,
-      fetchFromDbError: false
+      failureNotification: false,
     };
   }
   break;
 
-  case actionTypes.FETCH_CITIES_ERROR: {
+  case actionTypes.FETCH_CITIES_FAILURE: {
+    console.log(action);
     return {
       ...state,
-      fetchFromDbError: true
+      duringAction: false,
+      failureNotification: true,
+      notification: action.notification
     };
   }
   break;
 
-  case actionTypes.SAVE_CITIES_TO_DB: {
-    return { ...state };
-  }
-  break;
 
   case actionTypes.GET_CITIES_FROM_DB: {
     return { ...state };
   }
   break;
+
+  case actionTypes.DURING_ACTION: {
+    return {...state, duringAction: actionType.duringAction };
+  }
 
   default:
     return state;

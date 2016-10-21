@@ -4,7 +4,8 @@ import weatherReducer  from "./weatherReducer";
 
 
 const mainReducer = combineReducers({
-  cities: cityReducer
+  cities: cityReducer,
+  weather: weatherReducer
 });
 
 

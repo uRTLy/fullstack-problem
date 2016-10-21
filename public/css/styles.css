@@ -6,3 +6,86 @@
 .activeIcon {
   color: #eb6864;
 }
+
+
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.next-days-weather {
+  width: 100%;
+  flex: 2
+}
+.weather {
+  flex: 2;
+}
+
+
+
+
+
+
+
+.small-flex {
+  margin: 15;
+}
+.wrap {
+  flex-wrap: wrap;
+}
+
+.center {
+  justify-content: center;
+  align-items: center;
+}
+
+
+.forecast-table-short {
+  flex: 1;
+  font-size: 1.2rem;
+}
+.forecast-table-header {
+  flex: 1;
+  font-weight: bolder;
+}
+
+.forecast-desc {
+  font-size: 1.7rem;
+  font-weight: bolder
+}
+
+.forecast-desc > small {
+  font-weight: normal;
+  font-size: 1.4rem;
+}
+
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  text-align: initial
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: flex-start
+}
+
+.short-forecast {
+  width: 45%;
+}
+
+.forecasts-section {
+  max-width: 500px;
+  text-align: center;
+}
+
+@media (max-width: 875px) {
+    .flex-row.center {
+      flex-direction: column;
+      justify-content: center;
+    }
+}

@@ -42,8 +42,15 @@ const transform = object => {
   return transformed;
 };
 
+
+const weatherResponseParser = data => {
+  const parsedData = JSON.parse(data);
+  return parsedData.query.results.channel;
+};
+
 module.exports = {
   transform,
   denullify,
-  mapResponseToReadableObject
+  mapResponseToReadableObject,
+  weatherResponseParser
 };

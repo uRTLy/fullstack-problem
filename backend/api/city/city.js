@@ -5,6 +5,9 @@ const router = express.Router();
 const { db, sql } = require('../../utils/db.js');
 const getAllCitiesSQL = sql('./getCities.sql');
 const addCitySQL = sql('./addCity.sql');
+const deleteCitySQL = sql('./deleteCity.sql');
+const updateCitySQL = sql('./updateCity.sql');
+
 
 const {
   transform,
@@ -32,39 +35,74 @@ const apiCheckCityRoute = (req, res) => {
     });
 };
 
-
-
-const apiAddCityRoute = (req, res) => {
-  const { woeid = "Woeid not specified.",
+const apiAddCityRoute = (req, res, next) => {
+  let { woeid = "Woeid not specified.",
        country = "Country not specified.",
        region = "Region not specified.",
        district = "District not specified.",
        county = "County not specified.",
-       city = "City not specified" } = req.body.city;
+       city = "City not specified",
+       nameOrZip } = req.body.city;
+       city = city.includes("not specified") ? nameOrZip : city;
 
-  const queryParams = [woeid, country, region, district, county, city];
-  db.none(addCitySQL , [woeid, country, region, district, county, city])
-    .then((data) => res.json({
-      status: "succes",
-      message: "inserted one puppy",
-      data
-    }))
-    .catch(err => res.json({ err }));
+  db.result(addCitySQL , [woeid, country, region, district, county, city])
+    .then(data => {
+      res
+        .status(200)
+        .json({
+        status: "success",
+        data,
+        message: "City has been added successfully"})
+    })
+    .catch(error => next(error));
 
 };
 
-const getAllCities = (req, res) => {
+const apiGetAllCities = (req, res, next) => {
   db.any(getAllCitiesSQL)
     .then(data => res.json(data))
-    .catch(err => console.log(error));
+    .catch(error => next(error));
+};
+
+const apiEditCityRoute = (req, res, next) => {
+  const { woeid, country, region, district, county, city, id } = req.body.city;
+  db.none(updateCitySQL, [woeid, country, region, district, county, city, id])
+    .then(() => {
+      res
+       .status(200)
+       .json({
+         status: "success",
+         message: "City has been updated successfully"});
+    })
+    .catch(error => next(error));
+
+};
+
+const apiDeleteCityRoute = (req, res, next) => {
+  console.log(req.params);
+  db.result(deleteCitySQL, [req.params.woeid])
+    .then(result => {
+      res
+       .status(200)
+       .json({
+         status: "success",
+         result,
+         message: "City has been deleted successfully"});
+    })
+    .catch(error => next(error));
 };
 
 
 
-router.get('/cities', getAllCities)
+router.get('/cities', apiGetAllCities)
 
 router.get('/city/check/:zipcode', apiCheckCityRoute);
 
 router.post('/city/add', apiAddCityRoute);
+
+router.put('/city/edit', apiEditCityRoute);
+
+router.delete('/city/delete/:woeid', apiDeleteCityRoute);
+
 
 module.exports = router;

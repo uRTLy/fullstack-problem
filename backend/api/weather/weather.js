@@ -1,46 +1,44 @@
 'use strict';
 const express = require('express');
 const request = require('request-promise');
+const Promise = require('bluebird');
 
 const {
   transform,
-  mapResponseToReadableObject } = require("../../utils/yahooParser.js");
-
+  mapResponseToReadableObject,
+  weatherResponseParser } = require("../../utils/yahooParser.js");
 
 const router = express.Router();
 
 const yahooURL = 'https://query.yahooapis.com/v1/public/yql?q=';
 const endURL = "&format=json"
 
-const weatherQuery = woeid => `select * from weather.forecast where woeid='${woeid}')`;
+const weatherQuery = woeid => `select * from weather.forecast where woeid='${woeid}'`;
 
 const get = query => request(`${yahooURL}${query}${endURL}`);
 
-// router.get('/weather/cities/:zipcodes', routingArrayOfZipCodes);
+const getWeather = (woeid) => {
+  return get(weatherQuery(woeid));
+};
 
-const routingZipCode = function (req, res) {
-  const query = woeidQuery(req.params.zipcode);
+const routingZipCode = (req, res, next) => {
+  getWeather(req.params.zipcode)
+        .then(weather => res.send(weatherResponseParser(weather)))
+        .catch(error => next(error));
+};
 
-  const getPossibleWoeids = get(query)
-    .then(location => {
-      const response = JSON.parse(location).query.results.place;
-      res.json({
-        places: mapResponseToReadableObject(response)
-      });
-    });
-}
+const routingMultipleZipcodes = (req, res)=> {
+  const zipArray = req.params.zipcodes.split(',');
+  const promises = zipArray.map(zip => getWeather(zip));
+  Promise.all(promises).then(response => {
+    const parsedResponse = response.map(weatherResponseParser);
+    res.send(parsedResponse);
+  });
 
-
-function getWeather (woeid) {
-  return get(weatherQuery(woeid))
-    .then(response => console.log(response));
-}
-
-
-function routingArrayOfZipCodes (req, res) {
-
-}
+};
 
 router.get('/weather/city/:zipcode', routingZipCode);
+router.get('/weather/cities/:zipcodes', routingMultipleZipcodes);
+
 
 module.exports = router;

@@ -8,19 +8,17 @@ import {
   addCity,
   deleteCity,
   editCity,
-  saveCitiesToDB,
   checkSimilarCities } from "../../actions/citiesActions";
+import { fetchWeather } from "../../actions/weatherActions";
 
 import {
   Button,
   ListGroup,
   ListGroupItem,
   Col,
+  Alert,
   Glyphicon,
-  Fade,
-  Modal,
-  OverlayTrigger,
-  Tooltip } from "react-bootstrap";
+  Modal } from "react-bootstrap";
 
 import DisplayResults from "../DisplayResults/DisplayResults";
 import AddCityForm from "../AddCityForm/AddCityForm";
@@ -28,17 +26,10 @@ import EditCityForm from "../EditCityForm/EditCityForm";
 
 import { createStringFromObject } from "../../utils";
 
-
 const Header = Modal.Header;
 const Body = Modal.Body;
 
 const remove = (item, array) => array.filter(arrItem => arrItem !== item);
-
-const tooltip = (
-  <Tooltip id="infoTooltip">
-  You have to select atleast one city before proceding further
-  </Tooltip>
-);
 
 class ListBox extends Component {
   constructor () {
@@ -50,6 +41,8 @@ class ListBox extends Component {
     };
     this.cancelModal = this.cancelModal.bind(this);
     this.cancelEditForm = this.cancelEditForm.bind(this);
+    this.onSaveCity = this.onSaveCity.bind(this);
+
   }
   componentWillMount () {
     this.props.onAppInit();
@@ -64,8 +57,8 @@ class ListBox extends Component {
   cancelModal () {
     this.setState({ showAddCityForm: false });
   }
-  onSaveCity (city, oldIndex) {
-    this.props.editCity(city, oldIndex);
+  onSaveCity (city) {
+    this.props.editCity(city);
     this.cancelEditForm();
   }
   showEditCityForm (event, city) {
@@ -75,6 +68,11 @@ class ListBox extends Component {
   }
   cancelEditForm () {
     this.setState({ showEditCityForm: false, editedCity: null });
+  }
+  onFetchWeather () {
+    const arrayOfWOEIDs = this.state.selected.map(city => city.woeid);
+    this.props.getWeather(arrayOfWOEIDs);
+    this.setState({ selected: [] });
   }
   renderCity (city, i) {
     const { selected, editedCity } = this.state;
@@ -87,7 +85,7 @@ class ListBox extends Component {
         <p className="list-city">{createStringFromObject(city)}</p>
 
         <Glyphicon
-          onClick={() => this.props.removeCity(city)}
+          onClick={() => this.props.removeCity(city.woeid)}
           glyph="trash"
           className="icon"
           />
@@ -111,24 +109,33 @@ class ListBox extends Component {
     );
   }
   render () {
-    const { selected, isLoading, editedCity, showAddCityForm, showEditCityForm } = this.state;
+    const { selected, editedCity, showAddCityForm, showEditCityForm } = this.state;
+    const { weatherForecasts } = this.props;
     return (
       <div>
+          {this.props.failureNotification
+             &&
+            <Alert bsStyle="warning">
+            <strong>
+              {this.props.notification}
+            </strong>
+          </Alert>}
+
           <Col md={12} xs={12}>
             <ListGroup>
-              {this.props.cities.map((city, i) => {
+              {!!this.props.cities.length && this.props.cities.map((city, i) => {
                 return (editedCity === city) ? this.renderEditCity(city, i) : this.renderCity(city, i);
               })}
             </ListGroup>
 
             <Button
-              disabled={!selected.length || isLoading}
+              disabled={!selected.length}
               bsSize="large"
               bsStyle="success"
               ref="getWeatherBtn"
               block
-              onClick={() => console.log(this.props)}>
-              {(isLoading) ? "Loading..." : "Get The Weather"}
+              onClick={() => this.onFetchWeather()}>
+              Get the weather.
             </Button>
 
           <Button
@@ -147,6 +154,13 @@ class ListBox extends Component {
                 />
             </Body>
           </Modal>
+
+
+          <Col xs={12}>
+            {weatherForecasts && weatherForecasts.map((forecast, i)=> {
+              return <DisplayResults key={i} weather={forecast}/>;
+            })}
+          </Col>
         </Col>
       </div>
     );
@@ -155,7 +169,8 @@ class ListBox extends Component {
 
 function mapStateToProps (state) {
   const cities = state.cities;
-  return { ...cities };
+  const weather = state.weather;
+  return { ...cities, ...weather };
 }
 
 
@@ -163,10 +178,10 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     onAppInit: () => getAllCitiesFromDB(),
     addCity: city => addCity(city),
-    removeCity: id => deleteCity(id),
-    editCity: (city, oldIndex) => editCity(city, oldIndex),
-    updateDB: () => saveCitiesToDB(),
-    checkSimilarCities: city => checkSimilarCities(city)
+    removeCity: woeid => deleteCity(woeid),
+    editCity: (city) => editCity(city),
+    checkSimilarCities: city => checkSimilarCities(city),
+    getWeather: placeOrPlaces => fetchWeather(placeOrPlaces)
   }, dispatch);
 }
 

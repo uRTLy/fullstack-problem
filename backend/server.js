@@ -7,6 +7,8 @@ const weather = require("./api/weather/weather.js");
 const city = require("./api/city/city.js");
 app.use(bodyParser.json({ type: 'application/json' }));
 
+app.use('/static', express.static('public'));
+
 app.set('views', './views');
 app.set('view engine', 'pug');
 
@@ -18,7 +20,16 @@ app.use((req, res, next) => {
 });
 
 
-// app.use('/api', weather);
+app.use((err, req, res, next) => {
+  res.status(err.status || 500)
+  .json({
+    status: 'error',
+    message: err.message
+  });
+  next();
+});
+
+app.use('/api', weather);
 app.use('/api', city);
 
 app.listen(3000);

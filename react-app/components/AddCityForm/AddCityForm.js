@@ -19,8 +19,9 @@ class AddCityForm extends Component {
   validate () {
     return this.state.nameOrZip.length > 0;
   }
-  cityPicked (city ) {
-    this.props.addCity({ city });
+  cityPicked (city) {
+    const { nameOrZip } = this.state;
+    this.props.addCity({ city, nameOrZip });
     this.props.cancel()
   }
   renderCityForm () {
@@ -60,11 +61,11 @@ class AddCityForm extends Component {
   }
   renderChooseCity () {
 
-    const zipOrName = (zip.length) ? "zipcodes" : "names";
+    const { nameOrZip } = this.state;
     return (
       <div>
         <h3>
-          You've searched for {zipOrName}. There are many similar results , please pick the most precise one.
+          You've searched for {nameOrZip}. There are many similar results , please pick the most precise one.
         </h3>
         <ListGroup>
           {this.props.similarCities.map((city, i) =>
@@ -73,7 +74,7 @@ class AddCityForm extends Component {
       </div>
     );
   }
-  renderListItem (city) {
+  renderListItem (city, i) {
     return ( <ListGroupItem
                  onClick={() => this.cityPicked(city)}
                   key={i}>

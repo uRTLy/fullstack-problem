@@ -1,63 +1,71 @@
 import * as actionTypes from "./actionTypes";
 import axios from "axios";
 
-export function addCity (city) {
-
+export function addCity (cityObj) {
+  const { nameOrZip , city } = cityObj;
+  const cityToAdd = Object.assign({}, city, { nameOrZip });
   return function (dispatch) {
-    axios.post(`http://localhost:3000/api/city/add`, { city })
-      .then(res => dispatch(addCitySuccess(city, res)))
+    axios.post(`http://localhost:3000/api/city/add`, { city: cityToAdd })
+      .then(response => dispatch(addCitySuccess(city)))
       .catch(error => dispatch(addCityFailure(error)));
   };
 };
 
-export function addCitySuccess (city, res) {
-  console.log(res);
+export function addCitySuccess (city) {
   return {
     type: actionTypes.ADD_CITY,
-    city
+    city,
   };
 };
 
 export function addCityFailure (error) {
   return {
     type: actionTypes.ADD_CITY_FAILURE,
-    error
+    notification: error
   };
 };
 
-export function deleteCity (city) {
+export function deleteCity (woeid) {
   return function (dispatch) {
-    axios.delete(`http://localhost:3000/api/city/delete/`)
-      .then(res => dispatch(deleteCitySuccess(city)))
+    axios.delete(`http://localhost:3000/api/city/delete/${woeid}`)
+      .then(res => dispatch(deleteCitySuccess(woeid)))
       .catch(error => dispatch(deleteCityFailure(error)));
+
+      return {
+        type: actionTypes.DURING_ACTION,
+        duringAction: true
+      };
   };
 }
 
-export function deleteCitySuccess (city) {
+export function deleteCitySuccess (woeid) {
   return {
     type: actionTypes.DELETE_CITY,
-    city
+    woeid
   };
 };
 
 export function deleteCityFailure (error) {
   return {
     type: actionTypes.DELETE_CITY_FAILURE,
-    error
+    notification: error
   };
 }
 
-export function checkSimilarCities (cityObject) {
-  const { nameOrZip } = cityObject;
-
+export function checkSimilarCities (nameOrZip) {
   return function (dispatch) {
     axios.get(`http://localhost:3000/api/city/check/${nameOrZip}`)
-      .then(response => dispatch(checkSimilarCitiesSucces(response.data.places)))
-      .catch(err => dispatch(checkSimilarCitiesFailure(err)))
+      .then(response => dispatch(checkSimilarCitiesSuccess(response.data.places)))
+      .catch(err => dispatch(checkSimilarCitiesFailure(err)));
+
+      return {
+        type: actionTypes.DURING_ACTION,
+        duringAction: true
+      };
   }
 };
 
-export function checkSimilarCitiesSucces (cities) {
+export function checkSimilarCitiesSuccess (cities) {
   return {
     type: actionTypes.SIMILAR_CITIES_ARRIVED,
     similarCities: cities
@@ -67,34 +75,53 @@ export function checkSimilarCitiesSucces (cities) {
 
 export function checkSimilarCitiesFailure (error) {
   return {
-    type: actionTypes.SIMILAR_CITIES_ERROR,
-    error
+    type: actionTypes.SIMILAR_CITIES_FAILURE,
+    notification: error
   };
 };
 
 
 
-export function editCity (city, oldIndex) {
+export function editCity (city) {
+  return function (dispatch) {
+    axios.put("http://localhost:3000/api/city/edit/", { city })
+      .then(res => dispatch(editCitySuccess(city)))
+      .catch(error => dispatch(editCityError(error)));
+
+      return {
+        type: actionTypes.DURING_ACTION,
+        duringAction: true
+      };
+  };
+};
+
+export function editCitySuccess (city) {
   return {
     type: actionTypes.EDIT_CITY,
-    city,
-    oldIndex
+    city
   };
-};
+}
+
+export function editCityError (error) {
+  return {
+    type: actionTypes.EDIT_CITY_FAILURE,
+    notification: error
+  }
+}
 
 export function fetchCitiesSuccess (res) {
   const cities = res.data;
+  console.log(cities);
   return {
-    type: actionTypes.FETCH_CITIES_SUCCES,
+    type: actionTypes.FETCH_CITIES_SUCCESS,
     cities
   };
 }
 
 export function fetchCitiesError (error) {
-  console.log(error);
   return {
-    type: actionTypes.FETCH_CITIES_ERROR,
-    error,
+    type: actionTypes.FETCH_CITIES_FAILURE,
+    notification: error
   }
 }
 
@@ -105,8 +132,8 @@ export function getAllCitiesFromDB () {
       .catch(error => dispatch(fetchCitiesError(error)));
 
       return {
-        type: actionTypes.GET_CITIES_FROM_DB,
+        type: actionTypes.DURING_ACTION,
+        duringAction: true
       };
   };
-
 }
