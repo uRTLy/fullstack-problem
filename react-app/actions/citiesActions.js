@@ -1,8 +1,7 @@
 import * as actionTypes from "./actionTypes";
 import axios from "axios";
 
-// const url = "http://colortv-92112.onmodulus.net"
-const url = "http://localhost:3000";
+const url = "http://colortv-92112.onmodulus.net"
 
 export function addCity (cityObj) {
   const { nameOrZip , city } = cityObj;
