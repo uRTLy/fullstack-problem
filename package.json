@@ -2,10 +2,10 @@
   "name": "fullstack-problem",
   "version": "1.0.0",
   "description": "Color TV interview exercise",
-  "main": "./backend/server.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node ./backend/server.js",
-    "server": "node ./backend/server.js"
+    "start": "node app.js",
+    "startpage":"webpack-dev-server  --hot --content-base public/"
   },
   "author": "Patrick Tłuszcz <patricktluszcz@gmail.com>",
   "license": "ISC",
@@ -21,7 +21,6 @@
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "node-fetch": "^1.6.3",
     "pg-promise": "^5.3.4",
     "pug": "^2.0.0-beta6",
     "react": "^15.3.2",
@@ -30,10 +29,7 @@
     "redux-logger": "^2.7.0",
     "redux-thunk": "^2.1.0",
     "request": "^2.65.0",
-    "request-promise": "^4.1.1",
-    "sequelize": "^3.24.4",
-    "shortid": "^2.2.6",
-    "yql": "^1.0.2"
+    "request-promise": "^4.1.1"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",

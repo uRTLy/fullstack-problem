@@ -3,12 +3,12 @@ const express = require('express');
 const request = require('request-promise');
 const Promise = require('bluebird');
 
+const router = express.Router();
+
 const {
   transform,
   mapResponseToReadableObject,
   weatherResponseParser } = require("../../utils/yahooParser.js");
-
-const router = express.Router();
 
 const yahooURL = 'https://query.yahooapis.com/v1/public/yql?q=';
 const endURL = "&format=json"
@@ -27,13 +27,14 @@ const routingZipCode = (req, res, next) => {
         .catch(error => next(error));
 };
 
-const routingMultipleZipcodes = (req, res)=> {
+const routingMultipleZipcodes = (req, res, next)=> {
   const zipArray = req.params.zipcodes.split(',');
   const promises = zipArray.map(zip => getWeather(zip));
   Promise.all(promises).then(response => {
     const parsedResponse = response.map(weatherResponseParser);
     res.send(parsedResponse);
-  });
+  })
+  .catch(error => next(error));
 
 };
 

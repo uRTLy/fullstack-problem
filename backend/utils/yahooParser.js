@@ -10,7 +10,7 @@ const mapResponseToReadableObject = places => {
   const placesTransformed = places.map(place => {
 
     const placeWithoutNulls = denullify(place);
-    const transformed =  transform(placeWithoutNulls);
+    const transformed =  transformToFriendlyJSONResponse(placeWithoutNulls);
 
     return transformed;
   });
@@ -28,7 +28,7 @@ const denullify = object => {
   return withoutNulls;
 };
 
-const transform = object => {
+const transformToFriendlyJSONResponse = object => {
   const transformed = {};
   const ypt = yahooPropertiesTranslator;
 
@@ -44,12 +44,11 @@ const transform = object => {
 
 
 const weatherResponseParser = data => {
-  const parsedData = JSON.parse(data);
-  return parsedData.query.results.channel;
+  return JSON.parse(data).query.results.channel;
 };
 
 module.exports = {
-  transform,
+  transformToFriendlyJSONResponse,
   denullify,
   mapResponseToReadableObject,
   weatherResponseParser

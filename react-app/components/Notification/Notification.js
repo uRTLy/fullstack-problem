@@ -1,9 +1,12 @@
+import { Alert } from "react-bootstrap";
+import React from "react";
 
-
-export const Notification = (error, information, color) => {
+const Notification = error => {
   return (
-    <h1 className={(error) ? "error" : "succes"}>
-      {this.information}
-    </h1>
+    <Alert bsStyle="danger">
+      {error.message}
+    </Alert>
   );
-}
+};
+
+export default Notification;

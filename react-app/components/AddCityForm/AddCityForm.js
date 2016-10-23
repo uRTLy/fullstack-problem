@@ -60,7 +60,6 @@ class AddCityForm extends Component {
     );
   }
   renderChooseCity () {
-
     const { nameOrZip } = this.state;
     return (
       <div>
@@ -75,18 +74,21 @@ class AddCityForm extends Component {
     );
   }
   renderListItem (city, i) {
-    return ( <ListGroupItem
-                 onClick={() => this.cityPicked(city)}
-                  key={i}>
-            <p>{createStringFromObject(city)}</p>
-            </ListGroupItem>);
+    return (
+      <ListGroupItem key={i} onClick={() => this.cityPicked(city)} >
+        <p>
+          {createStringFromObject(city)}
+        </p>
+      </ListGroupItem>
+    );
     }
   render () {
+    const { similarCities } = this.props;
     return (
         <div>
 
-        {!this.props.similarCities.length && this.renderCityForm() || null}
-        {this.props.similarCities.length && this.renderChooseCity() || null}
+          {!similarCities.length && this.renderCityForm() || null}
+          {similarCities.length && this.renderChooseCity() || null}
 
         </div>
     );

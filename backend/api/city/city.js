@@ -23,7 +23,7 @@ const woeidQuery = location => `select * from geo.places where text='${location}
 
 const get = query => request(`${yahooURL}${query}${endURL}`);
 
-const apiCheckCityRoute = (req, res) => {
+const apiCheckCityRoute = (req, res, next) => {
   const query = woeidQuery(req.params.zipcode);
 
   const getPossibleWoeids = get(query)
@@ -32,7 +32,8 @@ const apiCheckCityRoute = (req, res) => {
       res.json({
         places: mapResponseToReadableObject(response)
       });
-    });
+    })
+    .catch(error => next(error));
 };
 
 const apiAddCityRoute = (req, res, next) => {
@@ -52,7 +53,8 @@ const apiAddCityRoute = (req, res, next) => {
         .json({
         status: "success",
         data,
-        message: "City has been added successfully"})
+        message: "City has been added successfully"
+      });
     })
     .catch(error => next(error));
 
@@ -79,7 +81,6 @@ const apiEditCityRoute = (req, res, next) => {
 };
 
 const apiDeleteCityRoute = (req, res, next) => {
-  console.log(req.params);
   db.result(deleteCitySQL, [req.params.woeid])
     .then(result => {
       res

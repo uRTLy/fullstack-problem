@@ -16,17 +16,16 @@ import {
   ListGroup,
   ListGroupItem,
   Col,
-  Alert,
   Glyphicon,
   Modal } from "react-bootstrap";
 
 import DisplayResults from "../DisplayResults/DisplayResults";
 import AddCityForm from "../AddCityForm/AddCityForm";
 import EditCityForm from "../EditCityForm/EditCityForm";
+import Notification from "../Notification/Notification";
 
 import { createStringFromObject } from "../../utils";
 
-const Header = Modal.Header;
 const Body = Modal.Body;
 
 const remove = (item, array) => array.filter(arrItem => arrItem !== item);
@@ -37,7 +36,8 @@ class ListBox extends Component {
     this.state = {
       selected: [],
       editedCity: "",
-      showAddCityForm: false
+      showAddCityForm: false,
+      showEditCityForm: false
     };
     this.cancelModal = this.cancelModal.bind(this);
     this.cancelEditForm = this.cancelEditForm.bind(this);
@@ -54,20 +54,23 @@ class ListBox extends Component {
 
     this.setState({ selected });
   }
-  cancelModal () {
-    this.setState({ showAddCityForm: false });
-  }
   onSaveCity (city) {
     this.props.editCity(city);
     this.cancelEditForm();
   }
+  onRemoveCity (event, woeid) {
+    event.stopPropagation();
+    this.props.removeCity(woeid);
+  }
   showEditCityForm (event, city) {
     event.stopPropagation();
     this.setState({ showEditCityForm: true, editedCity: city });
-
   }
   cancelEditForm () {
     this.setState({ showEditCityForm: false, editedCity: null });
+  }
+  cancelModal () {
+    this.setState({ showAddCityForm: false });
   }
   onFetchWeather () {
     const arrayOfWOEIDs = this.state.selected.map(city => city.woeid);
@@ -85,7 +88,7 @@ class ListBox extends Component {
         <p className="list-city">{createStringFromObject(city)}</p>
 
         <Glyphicon
-          onClick={() => this.props.removeCity(city.woeid)}
+          onClick={event => this.onRemoveCity(event, city.woeid)}
           glyph="trash"
           className="icon"
           />
@@ -110,17 +113,11 @@ class ListBox extends Component {
   }
   render () {
     const { selected, editedCity, showAddCityForm, showEditCityForm } = this.state;
-    const { weatherForecasts } = this.props;
+    const { weatherForecasts, notification } = this.props;
     return (
       <div>
-          {this.props.failureNotification
-             &&
-            <Alert bsStyle="warning">
-            <strong>
-              {this.props.notification}
-            </strong>
-          </Alert>}
-
+        {this.props.failureNotification
+         && <Notification error={notification}/>}
           <Col md={12} xs={12}>
             <ListGroup>
               {!!this.props.cities.length && this.props.cities.map((city, i) => {
@@ -168,8 +165,8 @@ class ListBox extends Component {
 }
 
 function mapStateToProps (state) {
-  const cities = state.cities;
-  const weather = state.weather;
+  const { cities } = state;
+  const { weather } = state;
   return { ...cities, ...weather };
 }
 

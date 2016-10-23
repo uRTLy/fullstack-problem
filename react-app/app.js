@@ -9,9 +9,8 @@ import  mainReducer from "./reducers";
 
 import ListBox from "./components/ListBox/ListBox";
 
-const logger = reduxLogger();
-const store = createStore(mainReducer, {}, applyMiddleware(thunkMiddleware, logger));
-
+// const logger = reduxLogger();
+const store = createStore(mainReducer, {}, applyMiddleware(thunkMiddleware));
 
 export default class App extends Component {
   render () {

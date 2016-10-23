@@ -4,7 +4,7 @@ var webpack = require("webpack");
 module.exports = {
   entry: "./react-app/app.js",
   output: {
-    path: path.resolve(__dirname, "public"),
+    path: path.resolve(__dirname, "public/js"),
     filename: "app.js",
     publicPath: "/js/"
     },

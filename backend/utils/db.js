@@ -1,10 +1,9 @@
-const postgressConfiguration = {
-  host: 'fizzy-cherry.db.elephantsql.com',
-  port: 5432,
-  user: 'cxpeayqi',
-  password: 'BQiHhSBTytESf-ClAFKDzea1b_8p0OhA'
-};
-
+// const postgressConfiguration = {
+//   host: 'fizzy-cherry.db.elephantsql.com',
+//   port: 5432,
+//   user: 'cxpeayqi',
+//   password: 'BQiHhSBTytESf-ClAFKDzea1b_8p0OhA'
+// };
 
 const options = {
   promiseLib: require('bluebird')

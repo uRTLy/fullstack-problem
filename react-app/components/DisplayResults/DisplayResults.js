@@ -7,14 +7,6 @@ const getCelsiuses = fahrenheit => {
   return Math.round(5/9 * (parsedF - 32));
 };
 
-const getIcon = text => {
-  const icons = {
-    "Mostly Cloudy": "cloud",
-    "Mostly Sunny": "sunlight"
-  };
-
-}
-
 const Forecast = ({date, day, high, low, text}, i) => {
   return (
     <div key={i} className="short-forecast flex-column">
@@ -37,7 +29,6 @@ export default class DisplayResults extends Component {
     const { astronomy, atmosphere, item, location, units, wind } = this.props.weather;
     const { date, temp, text } = item.condition;
     const { title } = item;
-    console.log(title);
     const { forecast: forecasts } = item;
 
     return (
@@ -53,7 +44,7 @@ export default class DisplayResults extends Component {
                   Date <small>{date}</small>
                 </p>
                 <p className="forecast-desc">
-                  Temperature <small>{temp}</small>
+                  Temperature <small>{temp}&deg;F / {getCelsiuses(temp)} &deg;C</small>
                 </p>
                 <p className="forecast-desc">
                   Condition <small>{text}</small>
@@ -65,26 +56,26 @@ export default class DisplayResults extends Component {
                   Sunset <small>{astronomy.sunset}</small>
                 </p>
                 <p className="forecast-desc">
-                  Humidity <small>{atmosphere.humidity}</small>
+                  Humidity <small>{atmosphere.humidity} % </small>
                 </p>
 
                 <p className="forecast-desc">
                   Rising <small> {atmosphere.rising}</small>
                 </p>
                 <p className="forecast-desc">
-                  Pressure <small>{atmosphere.pressure}</small>
+                  Pressure <small>{atmosphere.pressure} hPa</small>
                 </p>
                 <p className="forecast-desc">
-                  Visibility <small> {atmosphere.visibility}</small>
+                  Visibility <small> {atmosphere.visibility} kilometers</small>
                 </p>
                 <p className="forecast-desc">
-                  Chill <small>{wind.chill}</small>
+                  Wind Chill <small>{wind.chill}</small>
                 </p>
                 <p className="forecast-desc">
-                  Direction <small> {wind.direction} </small>
+                  Direction <small> {wind.direction} &deg;</small>
                 </p>
                 <p className="forecast-desc">
-                  Speed <small>{wind.speed}</small>
+                  Wind Speed <small>{wind.speed} km/h </small>
                 </p>
                 </div>
           </section>

@@ -1,11 +1,13 @@
 import * as actionTypes from "./actionTypes";
 import axios from "axios";
 
+const url = "http://colortv-92112.onmodulus.net"
+
 export function fetchWeather (zipOrZips) {
   const cityOrCities = (zipOrZips.length > 1) ? "cities" : "city";
   const places = zipOrZips.join(",");
   return function (dispatch) {
-    axios.get(`http://localhost:3000/api/weather/${cityOrCities}/${places}`)
+    axios.get(`${url}/api/weather/${cityOrCities}/${places}`)
       .then(response => dispatch(fetchSuccess(response)))
       .catch(error => dispatch(fetchError(error)));
 

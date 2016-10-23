@@ -1,11 +1,15 @@
 import * as actionTypes from "./actionTypes";
 import axios from "axios";
 
+// const url = "http://colortv-92112.onmodulus.net"
+const url = "http://localhost:3000";
+
 export function addCity (cityObj) {
   const { nameOrZip , city } = cityObj;
   const cityToAdd = Object.assign({}, city, { nameOrZip });
+
   return function (dispatch) {
-    axios.post(`http://localhost:3000/api/city/add`, { city: cityToAdd })
+    axios.post(`${url}/api/city/add`, { city: cityToAdd })
       .then(response => dispatch(addCitySuccess(city)))
       .catch(error => dispatch(addCityFailure(error)));
   };
@@ -27,7 +31,7 @@ export function addCityFailure (error) {
 
 export function deleteCity (woeid) {
   return function (dispatch) {
-    axios.delete(`http://localhost:3000/api/city/delete/${woeid}`)
+    axios.delete(`${url}/api/city/delete/${woeid}`)
       .then(res => dispatch(deleteCitySuccess(woeid)))
       .catch(error => dispatch(deleteCityFailure(error)));
 
@@ -54,7 +58,7 @@ export function deleteCityFailure (error) {
 
 export function checkSimilarCities (nameOrZip) {
   return function (dispatch) {
-    axios.get(`http://localhost:3000/api/city/check/${nameOrZip}`)
+    axios.get(`${url}/api/city/check/${nameOrZip}`)
       .then(response => dispatch(checkSimilarCitiesSuccess(response.data.places)))
       .catch(err => dispatch(checkSimilarCitiesFailure(err)));
 
@@ -84,7 +88,7 @@ export function checkSimilarCitiesFailure (error) {
 
 export function editCity (city) {
   return function (dispatch) {
-    axios.put("http://localhost:3000/api/city/edit/", { city })
+    axios.put(`${url}/api/city/edit/`, { city })
       .then(res => dispatch(editCitySuccess(city)))
       .catch(error => dispatch(editCityError(error)));
 
@@ -111,7 +115,6 @@ export function editCityError (error) {
 
 export function fetchCitiesSuccess (res) {
   const cities = res.data;
-  console.log(cities);
   return {
     type: actionTypes.FETCH_CITIES_SUCCESS,
     cities
@@ -127,7 +130,7 @@ export function fetchCitiesError (error) {
 
 export function getAllCitiesFromDB () {
   return function (dispatch) {
-    axios.get("http://localhost:3000/api/cities")
+    axios.get(`${url}/api/cities`)
       .then(response => dispatch(fetchCitiesSuccess(response)))
       .catch(error => dispatch(fetchCitiesError(error)));
 
